@@ -57,8 +57,11 @@ public class MealSession {
     @PrePersist
     public void onCreate(){
 
-        if (endTime.isBefore(startTime) || endTime.isBefore(LocalDateTime.now())) {
+        if (endTime.isBefore(startTime)) {
             throw new IllegalArgumentException("End time cannot be before start time");
+        }
+        if (endTime.isBefore(LocalDateTime.now().plusMinutes(30))){
+            throw new IllegalArgumentException("End time must be 30 minutes before now.");
         }
         createdAt=LocalDateTime.now();
         updatedAt=LocalDateTime.now();

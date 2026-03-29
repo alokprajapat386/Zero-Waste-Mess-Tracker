@@ -42,10 +42,6 @@ public class EnrollmentService {
             Enrollment enrollment = enrollmentRepository.findByUser_IdAndMealSession_Id(user.getId(), session.getId())
                     .orElseThrow(()-> new IllegalStateException("Already Enrolled"));
         }
-        LocalDateTime now=LocalDateTime.now();
-        if(now.isBefore(session.getStartTime()) || now.isAfter(session.getEndTime())){
-            throw new IllegalStateException("Session Inactive");
-        }
 
         Enrollment enrollment=new Enrollment();
         enrollment.setUser(user);

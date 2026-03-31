@@ -9,6 +9,8 @@ import com.example.ZeroWasteMessTracker.repositories.MealSessionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -74,6 +76,19 @@ public class MealSessionService {
     }
 
     public List<MealSessionResponse> getActiveSessions(Long hostelId){
-        return mealSessionRepository.findByHostel_IdAndActive(hostelId, true).stream().map(MealSessionResponse::new).toList();
+        List<MealSession> list =  mealSessionRepository.findByHostel_IdAndActive(hostelId, true);
+        List<MealSessionResponse> rlist=new ArrayList<MealSessionResponse>();
+        for(MealSession session : list){
+            if(session.getEndTime().isBefore(LocalDateTime.now())){
+                session.setActive(false);
+                mealSessionRepository.save(session);
+            }
+            else{
+                rlist.add(new MealSessionResponse(session));
+            }
+        }
+        return rlist;
+
+
     }
 }
